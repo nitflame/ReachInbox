@@ -68,7 +68,6 @@
   - type: web
     name: reachinbox-frontend
     runtime: static
-    region: oregon
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
