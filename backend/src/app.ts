@@ -54,6 +54,14 @@ export function createApp(): Express {
   app.use(sessionMiddleware);
 
   app.use(healthRouter);
+  app.get("/", (_req, res) => {
+    res.json({
+      name: "ReachInbox API",
+      status: "online",
+      health: "/health",
+      queues: "/admin/queues",
+    });
+  });
   app.use("/api/auth", devAuthMiddleware, authRouter);
   app.use("/api/slack", devAuthMiddleware, slackRouter);
 

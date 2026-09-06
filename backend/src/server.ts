@@ -8,12 +8,17 @@ import { ensureEmailIndex } from "./services/elasticsearch.service";
 import { runMigrations } from "./db/migrate";
 
 async function bootstrap(): Promise<void> {
-  const dbOk = await checkDbConnection();
+  // Retry database connection up to 5 times
+  let dbOk = false;
+  for (let i = 0; i < 5; i++) {
+    dbOk = await checkDbConnection();
+    if (dbOk) break;
+    console.warn(`⏳ Waiting for PostgreSQL to be ready (attempt ${i + 1}/5)...`);
+    await new Promise((r) => setTimeout(r, 2000));
+  }
+
   if (!dbOk) {
     console.error("⚠️ PostgreSQL is offline. Is it running and DATABASE_URL correct?");
-    if (env.NODE_ENV === "production") {
-      process.exit(1);
-    }
   } else {
     console.log("✅ PostgreSQL connected");
     await runMigrations().catch((err) => {
@@ -21,12 +26,17 @@ async function bootstrap(): Promise<void> {
     });
   }
 
-  const redisOk = await checkRedisConnection();
+  // Retry Redis connection up to 5 times
+  let redisOk = false;
+  for (let i = 0; i < 5; i++) {
+    redisOk = await checkRedisConnection();
+    if (redisOk) break;
+    console.warn(`⏳ Waiting for Redis to be ready (attempt ${i + 1}/5)...`);
+    await new Promise((r) => setTimeout(r, 2000));
+  }
+
   if (!redisOk) {
     console.error("⚠️ Redis is offline. Is it running and REDIS_URL correct?");
-    if (env.NODE_ENV === "production") {
-      process.exit(1);
-    }
   } else {
     console.log("✅ Redis connected");
   }
@@ -34,9 +44,6 @@ async function bootstrap(): Promise<void> {
   const queueOk = redisOk ? await checkQueueConnection() : false;
   if (!queueOk) {
     console.warn("⚠️ Email queue is running in degraded mode.");
-    if (env.NODE_ENV === "production") {
-      process.exit(1);
-    }
   } else {
     console.log(`✅ BullMQ queue "${env.EMAIL_QUEUE_NAME}" ready`);
   }
@@ -46,9 +53,10 @@ async function bootstrap(): Promise<void> {
   }
 
   const app = createApp();
-  const server = app.listen(env.PORT, () => {
-    console.log(`🚀 Server listening on port ${env.PORT} [${env.NODE_ENV}]`);
-    console.log(`   Health check: http://localhost:${env.PORT}/health`);
+  const port = Number(process.env.PORT) || env.PORT || 4000;
+  const server = app.listen(port, "0.0.0.0", () => {
+    console.log(`🚀 Server listening on 0.0.0.0:${port} [${env.NODE_ENV}]`);
+    console.log(`   Health check: http://localhost:${port}/health`);
   });
 
   const shutdown = async (signal: string): Promise<void> => {
