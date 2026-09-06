@@ -23,7 +23,7 @@ export async function devAuthMiddleware(
 ): Promise<void> {
   // Production protected routes MUST use real session authentication.
   // In dev/test, devAuthMiddleware only runs if ENABLE_DEV_AUTH is explicitly configured.
-  if (env.NODE_ENV === "production" || !env.ENABLE_DEV_AUTH) {
+  if (!env.ENABLE_DEV_AUTH) {
     return next();
   }
 

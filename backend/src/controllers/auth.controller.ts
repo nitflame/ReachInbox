@@ -100,8 +100,8 @@ export async function devLoginHandler(
   req: Request,
   res: Response
 ): Promise<void> {
-  if (env.NODE_ENV === "production" || !env.ENABLE_DEV_AUTH) {
-    res.status(403).json({ error: "Dev login is disabled in production" });
+  if (!env.ENABLE_DEV_AUTH) {
+    res.status(403).json({ error: "Dev login is disabled (set ENABLE_DEV_AUTH=true to enable)" });
     return;
   }
   const email = (typeof req.query.email === "string" ? req.query.email : env.DEV_DEFAULT_USER_EMAIL).toLowerCase();
