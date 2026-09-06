@@ -5,6 +5,7 @@ import { checkRedisConnection, closeRedis } from "./config/redis";
 import { checkQueueConnection, closeEmailQueue } from "./queues/email.queue";
 
 import { ensureEmailIndex } from "./services/elasticsearch.service";
+import { runMigrations } from "./db/migrate";
 
 async function bootstrap(): Promise<void> {
   const dbOk = await checkDbConnection();
@@ -15,6 +16,9 @@ async function bootstrap(): Promise<void> {
     }
   } else {
     console.log("✅ PostgreSQL connected");
+    await runMigrations().catch((err) => {
+      console.warn("⚠️ Migration check warning:", err instanceof Error ? err.message : String(err));
+    });
   }
 
   const redisOk = await checkRedisConnection();

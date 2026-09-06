@@ -13,6 +13,7 @@ export const redis: Redis = new IORedis(env.REDIS_URL, {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   retryStrategy: (times) => Math.min(times * 1000, 10000),
+  ...(env.REDIS_URL.startsWith("rediss://") ? { tls: { rejectUnauthorized: false } } : {}),
 });
 
 redis.on("error", (err) => {

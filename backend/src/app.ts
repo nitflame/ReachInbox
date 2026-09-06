@@ -15,6 +15,10 @@ import { setupBullBoard } from "./config/bullBoard";
 export function createApp(): Express {
   const app = express();
 
+  if (env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+  }
+
   // Helmet content security policy adjusted for Bull Board UI assets
   app.use(
     helmet({
@@ -23,6 +27,7 @@ export function createApp(): Express {
   );
   const allowedOrigins = [
     env.FRONTEND_URL,
+    env.FRONTEND_URL.replace(/\/$/, ""),
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:3000",
@@ -32,7 +37,7 @@ export function createApp(): Express {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
           callback(null, true);
         } else if (env.NODE_ENV !== "production") {
           callback(null, origin);

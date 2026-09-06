@@ -15,6 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import { useEmail } from '../context/EmailContext';
 import { Button } from './ui/Button';
 import { AntiGravityToggle } from './canvas/AntiGravityToggle';
+import { API_BASE_URL } from '../api/emailService';
 
 interface NavbarProps {
   onOpenCompose: () => void;
@@ -256,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
                 <div className="px-2 py-1.5">
                   <a
-                    href="http://localhost:4000/admin/queues"
+                    href={`${API_BASE_URL}/admin/queues`}
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center gap-2 px-3 py-1.5 text-xs text-[#c3c7db] hover:bg-[#1f2538] rounded-lg transition-colors"

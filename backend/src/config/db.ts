@@ -1,9 +1,14 @@
 import { Pool, type PoolConfig, type QueryResult, type QueryResultRow } from "pg";
 import { env } from "./env";
 
+const useSsl =
+  env.PG_SSL ||
+  env.DATABASE_URL.includes("sslmode=require") ||
+  env.DATABASE_URL.includes("ssl=true");
+
 const poolConfig: PoolConfig = {
   connectionString: env.DATABASE_URL,
-  ssl: env.PG_SSL ? { rejectUnauthorized: false } : undefined,
+  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
   max: 10,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,

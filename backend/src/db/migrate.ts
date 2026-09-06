@@ -10,7 +10,16 @@ import { pool } from "../config/db";
  * the project without pulling in a full migration framework.
  */
 
-const MIGRATIONS_DIR = path.join(__dirname, "migrations");
+const possibleDirs = [
+  path.join(__dirname, "migrations"),
+  path.join(__dirname, "../src/db/migrations"),
+  path.join(__dirname, "../../src/db/migrations"),
+  path.join(process.cwd(), "src/db/migrations"),
+  path.join(process.cwd(), "dist/db/migrations"),
+  path.join(process.cwd(), "backend/src/db/migrations"),
+  path.join(process.cwd(), "backend/dist/db/migrations"),
+];
+const MIGRATIONS_DIR = possibleDirs.find((dir) => fs.existsSync(dir)) || path.join(__dirname, "migrations");
 
 async function ensureMigrationsTable(): Promise<void> {
   await pool.query(`
@@ -26,7 +35,7 @@ async function getAppliedMigrations(): Promise<Set<string>> {
   return new Set(result.rows.map((r) => r.name));
 }
 
-async function runMigrations(): Promise<void> {
+export async function runMigrations(): Promise<void> {
   console.log("🔧 Running database migrations...");
 
   await ensureMigrationsTable();
@@ -69,9 +78,11 @@ async function runMigrations(): Promise<void> {
   console.log("🎉 All migrations applied.");
 }
 
-runMigrations()
-  .then(() => pool.end())
-  .catch((err) => {
-    console.error(err);
-    pool.end().finally(() => process.exit(1));
-  });
+if (require.main === module) {
+  runMigrations()
+    .then(() => pool.end())
+    .catch((err) => {
+      console.error(err);
+      pool.end().finally(() => process.exit(1));
+    });
+}

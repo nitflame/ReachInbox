@@ -72,19 +72,21 @@ export const envSchema = z.object({
         message: "SESSION_SECRET must be explicitly configured in production and cannot be the default fallback secret",
       });
     }
-    if (!data.GOOGLE_CLIENT_ID || data.GOOGLE_CLIENT_ID === "dummy-google-client-id.apps.googleusercontent.com") {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["GOOGLE_CLIENT_ID"],
-        message: "GOOGLE_CLIENT_ID must be explicitly configured in production",
-      });
-    }
-    if (!data.GOOGLE_CLIENT_SECRET || data.GOOGLE_CLIENT_SECRET === "dummy-google-client-secret") {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["GOOGLE_CLIENT_SECRET"],
-        message: "GOOGLE_CLIENT_SECRET must be explicitly configured in production",
-      });
+    if (!data.ENABLE_DEV_AUTH) {
+      if (!data.GOOGLE_CLIENT_ID || data.GOOGLE_CLIENT_ID === "dummy-google-client-id.apps.googleusercontent.com") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["GOOGLE_CLIENT_ID"],
+          message: "GOOGLE_CLIENT_ID must be explicitly configured in production (or ENABLE_DEV_AUTH=true for demo)",
+        });
+      }
+      if (!data.GOOGLE_CLIENT_SECRET || data.GOOGLE_CLIENT_SECRET === "dummy-google-client-secret") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["GOOGLE_CLIENT_SECRET"],
+          message: "GOOGLE_CLIENT_SECRET must be explicitly configured in production (or ENABLE_DEV_AUTH=true for demo)",
+        });
+      }
     }
   }
 });

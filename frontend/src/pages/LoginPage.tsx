@@ -1,6 +1,7 @@
 import React from 'react';
 import { Send, Shield, Zap, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../api/emailService';
 
 export const LoginPage: React.FC = () => {
   const { loginWithGoogle, isLoading } = useAuth();
@@ -84,7 +85,7 @@ export const LoginPage: React.FC = () => {
           {/* Quick Dev Login Button */}
           <button
             onClick={() => {
-              window.location.href = 'http://localhost:4000/api/auth/dev-login';
+              window.location.href = `${API_BASE_URL}/api/auth/dev-login`;
             }}
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1a1f2e] hover:bg-[#232a3e] text-[#c3c7db] hover:text-white font-medium text-xs transition-all duration-150 border border-[#2d354d] cursor-pointer"
           >
