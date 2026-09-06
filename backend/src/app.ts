@@ -37,7 +37,13 @@ export function createApp(): Express {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+        if (
+          !origin ||
+          allowedOrigins.includes(origin) ||
+          allowedOrigins.includes(origin.replace(/\/$/, "")) ||
+          origin.endsWith(".up.railway.app") ||
+          origin.endsWith(".onrender.com")
+        ) {
           callback(null, true);
         } else if (env.NODE_ENV !== "production") {
           callback(null, origin);

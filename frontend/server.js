@@ -1,4 +1,4 @@
-﻿import http from "http";
+import http from "http";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -33,6 +33,14 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || "application/octet-stream";
     res.setHeader("Content-Type", contentType);
+
+    if (ext === ".js" || ext === ".html") {
+      let content = fs.readFileSync(filePath, "utf8");
+      const backendUrl = process.env.VITE_API_URL || "https://reachinbox-backend-production-1e5c.up.railway.app";
+      content = content.split("http://localhost:4000").join(backendUrl);
+      return res.end(content);
+    }
+
     fs.createReadStream(filePath).pipe(res);
   });
 });

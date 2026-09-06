@@ -82,15 +82,15 @@ export const LoginPage: React.FC = () => {
             <span>{isLoading ? 'Verifying session...' : 'Sign in with Google'}</span>
           </button>
 
-          {/* Quick Dev Login Button */}
+          {/* Quick Demo Login Button */}
           <button
             onClick={() => {
               window.location.href = `${API_BASE_URL}/api/auth/dev-login`;
             }}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1a1f2e] hover:bg-[#232a3e] text-[#c3c7db] hover:text-white font-medium text-xs transition-all duration-150 border border-[#2d354d] cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-200 hover:text-white font-semibold text-xs transition-all duration-150 border border-indigo-500/40 shadow-sm hover:shadow cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Quick Dev Login (Local Development)</span>
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span>⚡ Instant Demo Login (Skip Google OAuth)</span>
           </button>
 
           <p className="text-[11px] text-center text-[#71788e]">

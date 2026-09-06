@@ -9,7 +9,11 @@ import type {
   DateRangeOption,
 } from '../types';
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== 'undefined' && window.location.hostname.includes('railway.app')
+    ? 'https://reachinbox-backend-production-1e5c.up.railway.app'
+    : 'http://localhost:4000');
 
 interface BackendEmailRecord {
   id: string;
