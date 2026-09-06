@@ -1,0 +1,47 @@
+﻿# Dependencies
+node_modules/
+**/node_modules/
+
+# Production builds
+dist/
+**/dist/
+dist-ssr/
+**/dist-ssr/
+
+# Environment and secrets (CRITICAL: NEVER COMMIT)
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+!**/.env.example
+!.env.example
+
+# Logs
+logs
+*.log
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test and temporary coverage
+coverage/
+**/coverage/
+.turbo/
+*.local
+scratch/
